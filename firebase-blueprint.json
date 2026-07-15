@@ -1,0 +1,168 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account registration and privileges profile document",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique Firebase Authentication UID"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Registered email address"
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Full name in Bangla or English"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "user"],
+          "description": "Security access role tier"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account registration timestamp"
+        }
+      },
+      "required": ["uid", "email", "displayName", "role", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Digital product catalog metadata stored in Firestore",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique alphanumeric document ID"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Name of digital asset in Bangla"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000,
+          "description": "Full marketing product description"
+        },
+        "price": {
+          "type": "number",
+          "description": "Purchase licensing price in BDT Taka"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["themes", "plugins", "ebooks", "courses", "software"],
+          "description": "Product directory category slug"
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public asset thumbnail hosting link"
+        },
+        "downloadUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Secure file storage bucket access url"
+        },
+        "fileSize": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Human-readable size e.g. 14.8 MB"
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "File build version slug e.g. v2.1.0"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Aggregated user review rating decimal score"
+        },
+        "reviewsCount": {
+          "type": "number",
+          "description": "Count of public ratings"
+        },
+        "salesCount": {
+          "type": "number",
+          "description": "Count of completed customer checkout redemptions"
+        }
+      },
+      "required": ["id", "name", "price", "category", "imageUrl", "downloadUrl", "fileSize", "version"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase transaction record for validation",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order transaction identifier code"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Paying authenticated customer UID code"
+        },
+        "userName": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Paying checkout billing full name"
+        },
+        "userEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Target checkout receipt email link"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total checkout invoice cost in Taka"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["bkash", "nagad", "rocket", "card"],
+          "description": "Selected financial checkout route"
+        },
+        "paymentNumber": {
+          "type": "string",
+          "maxLength": 15,
+          "description": "Sender transaction phone hotline digits"
+        },
+        "transactionId": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "Carrier return transaction key TrxID"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "approved", "rejected"],
+          "description": "Verification flow state"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Order creation timestamp"
+        }
+      },
+      "required": ["id", "userId", "userName", "userEmail", "totalAmount", "paymentMethod", "paymentNumber", "transactionId", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User account registration details"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Complete digital asset catalogs"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer payment transactions"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Robots.txt for Hat Bazar digital marketplace
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /dashboard/
+
+Sitemap: https://hatbazar-marketplace.com/sitemap.xml

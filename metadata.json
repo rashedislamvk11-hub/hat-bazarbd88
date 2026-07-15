@@ -1,0 +1,6 @@
+{
+  "name": "Hat Bazar",
+  "description": "একটি প্রিমিয়াম ডিজিটাল প্রোডাক্ট মার্কেটপ্লেস (Hat Bazar) - যেখানে আপনি সহজেই বিভিন্ন ডিজিটাল সফটওয়্যার, থিম, প্লাগইন, বই এবং কোর্স ক্রয়-বিক্রয় করতে পারবেন।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

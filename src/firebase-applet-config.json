@@ -1,0 +1,9 @@
+{
+  "apiKey": "AIzaSy-mock-api-key-for-preview-only",
+  "authDomain": "hat-bazar-mock.firebaseapp.com",
+  "projectId": "hat-bazar-mock",
+  "storageBucket": "hat-bazar-mock.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:123456789:web:abcdef123456",
+  "firestoreDatabaseId": "(default)"
+}
