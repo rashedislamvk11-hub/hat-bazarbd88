@@ -479,13 +479,15 @@ export async function getCategoriesFromFirestore(): Promise<Category[]> {
     const saved = localStorage.getItem('hb-persistent-categories');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsedList = JSON.parse(saved) as Category[];
+        return parsedList.sort((a, b) => a.name.localeCompare(b.name, 'bn'));
       } catch (e) {
-        return INITIAL_CATEGORIES;
+        return [...INITIAL_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name, 'bn'));
       }
     }
-    localStorage.setItem('hb-persistent-categories', JSON.stringify(INITIAL_CATEGORIES));
-    return INITIAL_CATEGORIES;
+    const sortedInit = [...INITIAL_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name, 'bn'));
+    localStorage.setItem('hb-persistent-categories', JSON.stringify(sortedInit));
+    return sortedInit;
   }
 
   try {
@@ -505,15 +507,17 @@ export async function getCategoriesFromFirestore(): Promise<Category[]> {
 
     if (list.length === 0) {
       console.log("Categories empty, seeding INITIAL_CATEGORIES to Firestore...");
-      for (const cat of INITIAL_CATEGORIES) {
+      const sortedInit = [...INITIAL_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name, 'bn'));
+      for (const cat of sortedInit) {
         await saveCategoryToFirestore(cat);
       }
-      return INITIAL_CATEGORIES;
+      return sortedInit;
     }
-    return list;
+    return list.sort((a, b) => a.name.localeCompare(b.name, 'bn'));
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, CATEGORIES_COLLECTION);
-    return INITIAL_CATEGORIES;
+    const sortedInit = [...INITIAL_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name, 'bn'));
+    return sortedInit;
   }
 }
 

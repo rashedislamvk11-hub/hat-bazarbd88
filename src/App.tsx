@@ -9,6 +9,7 @@ import { updateSEO } from './utils/seo';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { FloatingChat } from './components/FloatingChat';
+import { AdminPinModal } from './components/AdminPinModal';
 import { Home } from './pages/Home';
 import { Products } from './pages/Products';
 import { ProductDetails } from './pages/ProductDetails';
@@ -18,10 +19,10 @@ import { UserDashboard } from './pages/UserDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { Support } from './pages/Support';
 
-import { INITIAL_PRODUCTS } from './data/mockData';
-import { Product, Order } from './types';
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from './data/mockData';
+import { Product, Order, Category } from './types';
 import { formatPrice, toBanglaNumber, getCategoryBanglaName } from './utils/helpers';
-import { getProductsFromFirestore, saveProductToFirestore, deleteProductFromFirestore, getOrdersFromFirestore, updateOrderStatusInFirestore } from './lib/firestoreService';
+import { getProductsFromFirestore, saveProductToFirestore, deleteProductFromFirestore, getOrdersFromFirestore, updateOrderStatusInFirestore, getCategoriesFromFirestore } from './lib/firestoreService';
 import { ShoppingBag, X, Trash2, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -87,9 +88,11 @@ function MainAppContent() {
   const [supportTab, setSupportTab] = useState<'faq' | 'contact' | 'privacy' | 'terms' | 'refund'>('faq');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
   // Database lists stored in localStorage for full interactive persistence!
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
 
   const [orders, setOrders] = useState<Order[]>(() => {
     const saved = localStorage.getItem('hb-persistent-orders');
@@ -115,7 +118,7 @@ function MainAppContent() {
     updateSEO(currentView, settings, activeProduct);
   }, [currentView, selectedProductId, settings, products]);
 
-  // Load products and orders from Firestore on mount
+  // Load products, orders, and categories from Firestore whenever view changes
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -128,6 +131,15 @@ function MainAppContent() {
       }
 
       try {
+        const cats = await getCategoriesFromFirestore();
+        if (cats && cats.length > 0) {
+          setCategories(cats);
+        }
+      } catch (e) {
+        console.error("Error loading categories from Firestore:", e);
+      }
+
+      try {
         const oData = await getOrdersFromFirestore();
         if (oData && oData.length > 0) {
           setOrders(oData);
@@ -137,7 +149,7 @@ function MainAppContent() {
       }
     };
     loadData();
-  }, []);
+  }, [currentView]);
 
   useEffect(() => {
     localStorage.setItem('hb-persistent-orders', JSON.stringify(orders));
@@ -270,6 +282,7 @@ function MainAppContent() {
         currentView={currentView}
         onNavigate={handleNavigate}
         onOpenCart={() => setIsCartOpen(true)}
+        onOpenPinModal={() => setIsPinModalOpen(true)}
       />
 
       {/* Main Content Body */}
@@ -285,6 +298,7 @@ function MainAppContent() {
             {currentView === 'home' && (
               <Home
                 products={products}
+                categories={categories}
                 onNavigate={handleNavigate}
                 onViewProduct={handleViewProductDetails}
               />
@@ -293,6 +307,7 @@ function MainAppContent() {
             {currentView === 'products' && (
               <Products
                 products={products}
+                categories={categories}
                 onViewProduct={handleViewProductDetails}
                 selectedCategoryFilter={categoryFilter}
                 onClearCategoryFilter={() => setCategoryFilter(null)}
@@ -353,7 +368,14 @@ function MainAppContent() {
       </main>
 
       {/* Dynamic Footer Component */}
-      <Footer />
+      <Footer onOpenPinModal={() => setIsPinModalOpen(true)} />
+
+      {/* Admin Verification Passcode Modal */}
+      <AdminPinModal
+        isOpen={isPinModalOpen}
+        onClose={() => setIsPinModalOpen(false)}
+        onSuccess={() => handleNavigate('admin')}
+      />
 
       {/* Floating Chat & Support Assistance */}
       <FloatingChat />

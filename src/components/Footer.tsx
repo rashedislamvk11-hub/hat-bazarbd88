@@ -1,11 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAdminSettings } from '../context/AdminSettingsContext';
 import { useTheme } from '../context/ThemeContext';
 import { Facebook, Send, MessageSquare, Phone, Mail, MapPin } from 'lucide-react';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenPinModal?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenPinModal }) => {
   const { settings } = useAdminSettings();
   const { getAccentTextClass } = useTheme();
+
+  // Secret footer click tracking for Admin PIN prompt
+  const [footerClicks, setFooterClicks] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
+
+  const handleFooterClick = () => {
+    if (!onOpenPinModal) return;
+
+    const now = Date.now();
+    if (now - lastClickTime < 1500) {
+      const newClicks = footerClicks + 1;
+      setFooterClicks(newClicks);
+      if (newClicks >= 5) {
+        onOpenPinModal();
+        setFooterClicks(0);
+      }
+    } else {
+      setFooterClicks(1);
+    }
+    setLastClickTime(now);
+  };
 
   return (
     <footer className="border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400 font-sans transition-all duration-300">
@@ -93,7 +118,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Section */}
         <div className="mt-12 border-t border-slate-100 dark:border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-400 dark:text-slate-500">
-          <p>© ২০২৬ {settings.websiteName}। সর্বস্বত্ব সংরক্ষিত।</p>
+          <p onClick={handleFooterClick} className="cursor-pointer select-none hover:text-slate-500 dark:hover:text-slate-300 transition-colors">© ২০২৬ {settings.websiteName}। সর্বস্বত্ব সংরক্ষিত।</p>
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-5">
             <a href="#order" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">ডাউনলোড ও অর্ডার ট্র্যাকিং</a>
             <a href="#privacy" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">গোপনীয়তা নীতি</a>

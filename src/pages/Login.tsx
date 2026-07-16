@@ -303,23 +303,6 @@ export const Login: React.FC<LoginProps> = ({ onBack }) => {
           </span>
 
           <div className="grid grid-cols-1 gap-2.5">
-            {/* Admin Profile access */}
-            <button
-              onClick={() => handleQuickLogin('admin@hatbazar.com')}
-              className="flex items-center justify-between rounded-xl border border-rose-100 dark:border-rose-950/20 bg-rose-50/10 dark:bg-rose-950/5 p-3 text-left transition-all active:scale-[0.98] hover:bg-rose-50/20"
-            >
-              <div className="flex items-center gap-2 text-xs">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500 text-white font-bold">
-                  <Shield className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-rose-600 dark:text-rose-400">{SIMULATED_USERS[0].displayName}</h4>
-                  <p className="text-[9px] text-slate-400 font-mono">ইমেইল: admin@hatbazar.com</p>
-                </div>
-              </div>
-              <ArrowRight className="h-4 w-4 text-rose-500" />
-            </button>
-
             {/* Standard User profile access */}
             <button
               onClick={() => handleQuickLogin('user@hatbazar.com')}
@@ -330,7 +313,7 @@ export const Login: React.FC<LoginProps> = ({ onBack }) => {
                   <User className="h-4 w-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-emerald-600 dark:text-emerald-400">{SIMULATED_USERS[1].displayName}</h4>
+                  <h4 className="font-bold text-emerald-600 dark:text-emerald-400">{SIMULATED_USERS[2].displayName}</h4>
                   <p className="text-[9px] text-slate-400 font-mono">ইমেইল: user@hatbazar.com</p>
                 </div>
               </div>

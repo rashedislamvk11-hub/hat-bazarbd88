@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { INITIAL_CATEGORIES } from '../data/mockData';
 import { useTheme } from '../context/ThemeContext';
 import { useAdminSettings } from '../context/AdminSettingsContext';
@@ -31,11 +31,12 @@ import { motion, AnimatePresence } from 'motion/react';
 
 interface HomeProps {
   products: Product[];
+  categories: Category[];
   onNavigate: (view: string, filterCategory?: string) => void;
   onViewProduct: (productId: string) => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ products, onNavigate, onViewProduct }) => {
+export const Home: React.FC<HomeProps> = ({ products, categories, onNavigate, onViewProduct }) => {
   const { 
     getAccentBgClass, 
     getAccentTextClass, 
@@ -338,38 +339,7 @@ export const Home: React.FC<HomeProps> = ({ products, onNavigate, onViewProduct 
             </button>
           </motion.div>
 
-          {/* Trust stats row */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 md:pt-12 border-t border-slate-100 dark:border-slate-800 max-w-3xl mx-auto text-center"
-          >
-            <div className="space-y-1">
-              <p className={`text-xl sm:text-2xl font-black ${getAccentTextClass()}`}>
-                {toBanglaNumber('১০,০০০')}+
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">সন্তুষ্ট গ্রাহক</p>
-            </div>
-            <div className="space-y-1">
-              <p className={`text-xl sm:text-2xl font-black ${getAccentTextClass()}`}>
-                {toBanglaNumber(products.length)}+
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">ডিজিটাল কন্টেন্ট</p>
-            </div>
-            <div className="space-y-1">
-              <p className={`text-xl sm:text-2xl font-black ${getAccentTextClass()}`}>
-                {toBanglaNumber('১৫০,০০০')}+
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">সফল ডাউনলোড</p>
-            </div>
-            <div className="space-y-1">
-              <p className={`text-xl sm:text-2xl font-black ${getAccentTextClass()}`}>
-                {toBanglaNumber('৯৯.৮')}%
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">ডেলিভারি রেট</p>
-            </div>
-          </motion.div>
+          {/* Trust stats row removed from here */}
         </div>
       </section>
 
@@ -397,7 +367,7 @@ export const Home: React.FC<HomeProps> = ({ products, onNavigate, onViewProduct 
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {INITIAL_CATEGORIES.map((category) => {
+          {categories.map((category) => {
             const count = getProductCount(category.id);
             return (
               <motion.div
@@ -533,6 +503,8 @@ export const Home: React.FC<HomeProps> = ({ products, onNavigate, onViewProduct 
         </div>
       </section>
 
+      {/* Removed old Section 5 Product Categories from here */}
+
       {/* 6. WHY CHOOSE US SECTION */}
       <section className="space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
@@ -632,7 +604,46 @@ export const Home: React.FC<HomeProps> = ({ products, onNavigate, onViewProduct 
         </div>
       </section>
 
-      {/* 8. FAQ SECTION */}
+      {/* 8. STATISTICS SECTION */}
+      <section className="py-12 bg-slate-500/5 dark:bg-slate-500/10 border border-slate-100 dark:border-slate-800/60 rounded-3xl space-y-8">
+        <div className="text-center max-w-2xl mx-auto space-y-2 px-4">
+          <h2 className="font-sans text-2xl md:text-3xl font-black text-slate-950 dark:text-white">
+            এক নজরে আমাদের অর্জন ও পরিসংখ্যান
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            দেশজুড়ে হাজারো গ্রাহকদের ভালোবাসায় এবং বিশ্বস্ততায় আমরা এগিয়ে চলেছি
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto text-center px-6">
+          <div className="space-y-1.5 bg-white/50 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <p className={`text-2xl sm:text-3xl font-black ${getAccentTextClass()}`}>
+              {toBanglaNumber('১০,০০০')}+
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">সন্তুষ্ট গ্রাহক</p>
+          </div>
+          <div className="space-y-1.5 bg-white/50 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <p className={`text-2xl sm:text-3xl font-black ${getAccentTextClass()}`}>
+              {toBanglaNumber(products.length)}+
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">ডিজিটাল কন্টেন্ট</p>
+          </div>
+          <div className="space-y-1.5 bg-white/50 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <p className={`text-2xl sm:text-3xl font-black ${getAccentTextClass()}`}>
+              {toBanglaNumber('১৫০,০০০')}+
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">সফল ডাউনলোড</p>
+          </div>
+          <div className="space-y-1.5 bg-white/50 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <p className={`text-2xl sm:text-3xl font-black ${getAccentTextClass()}`}>
+              {toBanglaNumber('৯৯.৮')}%
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-bold">ডেলিভারি রেট</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. FAQ SECTION */}
       <section className="space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <div className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">

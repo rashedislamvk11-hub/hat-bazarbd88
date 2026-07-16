@@ -20,6 +20,9 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<void>;
   updateProfileData: (data: Partial<UserProfile>) => Promise<void>;
   isAdmin: boolean;
+  unlockAdminWithPin: (pin: string) => boolean;
+  lockAdmin: () => void;
+  isAdminPinUnlocked: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -58,6 +61,23 @@ const SIMULATED_USERS: UserProfile[] = [
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isAdminPinUnlocked, setIsAdminPinUnlocked] = useState<boolean>(() => {
+    return localStorage.getItem('hb-admin-pin-unlocked') === 'true';
+  });
+
+  const unlockAdminWithPin = (pin: string): boolean => {
+    if (pin === '112200') {
+      setIsAdminPinUnlocked(true);
+      localStorage.setItem('hb-admin-pin-unlocked', 'true');
+      return true;
+    }
+    return false;
+  };
+
+  const lockAdmin = () => {
+    setIsAdminPinUnlocked(false);
+    localStorage.removeItem('hb-admin-pin-unlocked');
+  };
 
   useEffect(() => {
     if (!isMockConfig && auth) {
@@ -71,7 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             } else {
               // Create default profile if not found
               const email = firebaseUser.email || '';
-              const role = email.includes('admin') || email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
+              const role = email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
               const newProfile: UserProfile = {
                 uid: firebaseUser.uid,
                 email: email,
@@ -85,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           } catch (error) {
             console.error("Error retrieving user profile:", error);
             const email = firebaseUser.email || '';
-            const role = email.includes('admin') || email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
+            const role = email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
             setUser({
               uid: firebaseUser.uid,
               email: email,
@@ -111,7 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } else {
         // Log in the client-side customer by default so they can interact right away
-        const defaultUser = SIMULATED_USERS[1]; // সাকিব হাসান
+        const defaultUser = SIMULATED_USERS[2]; // সাকিব হাসান (গ্রাহক)
         setUser(defaultUser);
         localStorage.setItem('hb-current-user', JSON.stringify(defaultUser));
       }
@@ -143,7 +163,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const fbUser = userCred.user;
         let profile = await getUserProfileFromFirestore(fbUser.uid);
         if (!profile) {
-          const role = email.includes('admin') || email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
+          const role = email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
           profile = {
             uid: fbUser.uid,
             email: fbUser.email || email,
@@ -213,7 +233,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const userCred = await createUserWithEmailAndPassword(auth, email, pass);
         await updateProfile(userCred.user, { displayName: name });
         const fbUser = userCred.user;
-        const role = email.includes('admin') || email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
+        const role = email === 'rashedislamvk11@gmail.com' ? 'admin' : 'user';
         const profile: UserProfile = {
           uid: fbUser.uid,
           email: fbUser.email || email,
@@ -265,6 +285,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       setUser(null);
       localStorage.removeItem('hb-current-user');
+      lockAdmin(); // Lock admin on logout for safety
     } catch (err) {
       console.error("Sign Out Error: ", err);
     } finally {
@@ -308,7 +329,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = (user?.role === 'admin' && user?.email?.toLowerCase() === 'rashedislamvk11@gmail.com') || isAdminPinUnlocked;
 
   return (
     <AuthContext.Provider value={{ 
@@ -319,7 +340,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       logout, 
       resetPassword, 
       updateProfileData, 
-      isAdmin 
+      isAdmin,
+      unlockAdminWithPin,
+      lockAdmin,
+      isAdminPinUnlocked
     }}>
       {children}
     </AuthContext.Provider>

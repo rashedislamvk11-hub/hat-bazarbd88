@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { useTheme } from '../context/ThemeContext';
 import { formatPrice, toBanglaNumber, getCategoryBanglaName } from '../utils/helpers';
 import { ImageUploader, GalleryUploader } from './ImageUploader';
@@ -7,6 +7,7 @@ import { Search, Plus, Trash2, Edit, Save, ArrowLeft, Check, PlayCircle, Termina
 
 interface AdminProductsProps {
   products: Product[];
+  categories?: Category[];
   onAddProduct: (p: Product) => void;
   onUpdateProduct: (p: Product) => void;
   onDeleteProduct: (id: string) => void;
@@ -14,11 +15,21 @@ interface AdminProductsProps {
 
 export const AdminProducts: React.FC<AdminProductsProps> = ({
   products,
+  categories,
   onAddProduct,
   onUpdateProduct,
   onDeleteProduct,
 }) => {
   const { getAccentBgClass, getAccentHoverBgClass, getAccentTextClass } = useTheme();
+
+  const categoryList = categories && categories.length > 0 ? categories : [
+    { id: 'courses', name: 'কোর্স' },
+    { id: 'software', name: 'সফটওয়্যার' },
+    { id: 'ebooks', name: 'ই-বুক' },
+    { id: 'templates', name: 'টেমপ্লেট' },
+    { id: 'tools', name: 'ডিজিটাল টুলস' },
+    { id: 'ai-products', name: 'AI প্রোডাক্ট' }
+  ];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -31,7 +42,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
   const [discountPrice, setDiscountPrice] = useState('');
   const [description, setDescription] = useState('');
   const [shortDescription, setShortDescription] = useState('');
-  const [category, setCategory] = useState('courses');
+  const [category, setCategory] = useState(categoryList[0]?.id || 'courses');
   const [imageUrl, setImageUrl] = useState('');
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [downloadUrl, setDownloadUrl] = useState('');
@@ -76,7 +87,7 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
     setDiscountPrice('');
     setDescription('');
     setShortDescription('');
-    setCategory('courses');
+    setCategory(categoryList[0]?.id || 'courses');
     setImageUrl('');
     setGalleryImages([]);
     setDownloadUrl('');
@@ -230,12 +241,9 @@ export const AdminProducts: React.FC<AdminProductsProps> = ({
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-2.5 focus:outline-none"
               >
-                <option value="courses">কোর্স</option>
-                <option value="software">সফটওয়্যার</option>
-                <option value="ebooks">ই-বুক</option>
-                <option value="templates">টেমপ্লেট</option>
-                <option value="tools">ডিজিটাল টুলস</option>
-                <option value="ai-products">AI প্রোডাক্ট</option>
+                {categoryList.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
               </select>
             </div>
 

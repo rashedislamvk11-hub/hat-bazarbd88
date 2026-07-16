@@ -25,7 +25,6 @@ service cloud.firestore {
       // Bootstrap the developer user email as permanent admin
       return isSignedIn() && (
         request.auth.token.email == 'rashedislamvk11@gmail.com' ||
-        request.auth.token.email == 'admin@hatbazar.com' ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       ); 
     }

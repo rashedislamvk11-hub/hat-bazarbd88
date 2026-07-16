@@ -431,6 +431,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {activeTab === 'products' && (
               <AdminProducts
                 products={products}
+                categories={categoriesList}
                 onAddProduct={async (prod) => {
                   await onAddProduct(prod);
                   logAdminAction('নতুন প্রোডাক্ট', `প্রোডাক্ট যোগ করা হয়েছে: ${prod.name}`);

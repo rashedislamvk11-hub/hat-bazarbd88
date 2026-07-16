@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { INITIAL_CATEGORIES } from '../data/mockData';
 import { useTheme } from '../context/ThemeContext';
 import { ProductCard } from '../components/ProductCard';
@@ -8,6 +8,7 @@ import { Search, SlidersHorizontal, ArrowUpDown, RefreshCw } from 'lucide-react'
 
 interface ProductsProps {
   products: Product[];
+  categories: Category[];
   onViewProduct: (productId: string) => void;
   selectedCategoryFilter?: string | null;
   onClearCategoryFilter?: () => void;
@@ -16,6 +17,7 @@ interface ProductsProps {
 
 export const Products: React.FC<ProductsProps> = ({
   products,
+  categories,
   onViewProduct,
   selectedCategoryFilter = null,
   onClearCategoryFilter,
@@ -126,7 +128,7 @@ export const Products: React.FC<ProductsProps> = ({
           সব প্রোডাক্টস
         </button>
 
-        {INITIAL_CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => handleCategoryChange(cat.id)}

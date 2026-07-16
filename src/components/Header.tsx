@@ -11,9 +11,10 @@ interface HeaderProps {
   currentView: string;
   onNavigate: (view: string) => void;
   onOpenCart: () => void;
+  onOpenPinModal?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenCart }) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenCart, onOpenPinModal }) => {
   const { theme, toggleTheme, accentColor, setAccentColor, getAccentTextClass, getAccentBgClass } = useTheme();
   const { user, logout, isAdmin } = useAuth();
   const { cartCount } = useCart();
@@ -22,6 +23,10 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenC
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  
+  // Secret logo click tracking for Admin PIN prompt
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
 
   // Dynamic Lucide Icon resolution
   const LogoIcon = (LucideIcons as any)[settings.websiteLogo] || LucideIcons.ShoppingBag;
@@ -47,6 +52,24 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenC
     setMobileMenuOpen(false);
   };
 
+  const handleLogoClick = () => {
+    handleNavClick('home');
+    if (!onOpenPinModal) return;
+
+    const now = Date.now();
+    if (now - lastClickTime < 1500) {
+      const newClicks = logoClicks + 1;
+      setLogoClicks(newClicks);
+      if (newClicks >= 5) {
+        onOpenPinModal();
+        setLogoClicks(0);
+      }
+    } else {
+      setLogoClicks(1);
+    }
+    setLastClickTime(now);
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-100/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/70 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -54,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onNavigate, onOpenC
           
           {/* Logo Section */}
           <div 
-            onClick={() => handleNavClick('home')} 
+            onClick={handleLogoClick} 
             className="flex cursor-pointer items-center gap-2.5 active:scale-95 transition-transform"
           >
             <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${getAccentBgClass()} text-white shadow-md shadow-emerald-500/15`}>

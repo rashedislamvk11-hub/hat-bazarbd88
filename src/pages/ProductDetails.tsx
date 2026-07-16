@@ -478,9 +478,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
             </div>
 
             {/* Price section supporting Discount */}
-            <div className="space-y-1 bg-slate-50/50 dark:bg-slate-950/20 p-4 rounded-xl border border-slate-100 dark:border-slate-850">
+            <div className="space-y-1 bg-amber-500/5 dark:bg-amber-500/10 p-4 rounded-xl border border-amber-500/15 dark:border-amber-500/20">
               <div className="flex items-baseline justify-between">
-                <span className="text-xs text-slate-400 dark:text-slate-500">লাইসেন্স বা কোর্স ফি:</span>
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">লাইসেন্স বা কোর্স ফি:</span>
                 <div className="text-right">
                   {hasDiscount && (
                     <div className="text-[11px] text-slate-400 line-through font-sans mb-0.5">
@@ -493,7 +493,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 </div>
               </div>
               {hasDiscount && (
-                <div className="flex items-center justify-between text-[10px] text-emerald-500 font-bold pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between text-[10px] text-emerald-500 font-bold pt-1.5 border-t border-dashed border-amber-500/15 dark:border-amber-500/30">
                   <span>সর্বমোট সেভিংস:</span>
                   <span>{toBanglaNumber(discountPercent)}% ছাড় (৳{toBanglaNumber(product.price - product.discountPrice!)} সাশ্রয়)</span>
                 </div>

@@ -57,6 +57,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
       {/* Product Body */}
       <div className="flex flex-1 flex-col p-5 space-y-2.5">
         
+        {/* Product Name */}
+        <h3 
+          onClick={() => onViewDetails(product.id)}
+          className="font-sans text-sm md:text-base font-bold leading-snug text-slate-950 dark:text-slate-50 group-hover:text-rose-500 dark:group-hover:text-rose-400 cursor-pointer line-clamp-1 transition-colors"
+        >
+          {product.name}
+        </h3>
+
         {/* Rating Stars line */}
         <div className="flex items-center gap-1 text-amber-500 text-[11px]">
           <div className="flex gap-0.5">
@@ -73,14 +81,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
           </span>
         </div>
 
-        {/* Product Name */}
-        <h3 
-          onClick={() => onViewDetails(product.id)}
-          className="font-sans text-sm md:text-base font-bold leading-snug text-slate-950 dark:text-slate-50 group-hover:text-rose-500 dark:group-hover:text-rose-400 cursor-pointer line-clamp-1 transition-colors"
-        >
-          {product.name}
-        </h3>
-
         {/* Short description / line clamp */}
         <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
           {product.shortDescription || product.description}
@@ -96,13 +96,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
           
           {/* Price Container */}
-          <div className="flex flex-col">
+          <div className="flex flex-col bg-amber-50 dark:bg-amber-950/20 px-3 py-1.5 rounded-xl border border-amber-200/60 dark:border-amber-900/30 text-amber-600 dark:text-amber-400 shadow-sm shrink-0 font-sans">
             {hasDiscount && (
-              <span className="text-[10px] text-slate-400 line-through font-sans">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none mb-1 font-bold">
                 {formatPrice(product.price)}
               </span>
             )}
-            <span className={`text-base font-black ${getAccentTextClass()}`}>
+            <span className="text-base sm:text-lg font-black leading-none">
               {formatPrice(finalPrice)}
             </span>
           </div>
